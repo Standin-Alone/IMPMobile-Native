@@ -7,7 +7,8 @@ import Layout from '../constants/Layout';
 import Button from 'apsl-react-native-button';
 import * as Animatable from 'react-native-animatable';
 import LinearGradient from 'react-native-linear-gradient';
-
+import NetInfo from "@react-native-community/netinfo";
+import * as ipConfig from '../ipconfig';
 export default class LoginScreen extends Component {
   constructor(props) {
     super(props);
@@ -15,8 +16,55 @@ export default class LoginScreen extends Component {
         isLoading:false,
         focus_username_txt:false,
         username:'',
-        password:''
+        password:'',
+        error:false
+
     };
+
+
+
+
+
+
+  }
+
+  handleLogin = ()=>{
+
+  
+    
+        let data = {
+            username:this.state.username,
+            password:this.state.password
+        }
+    
+        this.setState({isLoading:true,error:false});
+        
+        // axios post here
+    
+        NetInfo.fetch().then(async (response)=>{
+          if(response.isConnected){
+            
+            axios.post(ipConfig.ipAddress+'/sign_in',data).then((response)=>{
+              console.warn(response.data);                  
+              if(response.data['Message'] == 'true'){
+                
+               
+                this.setState({isLoading:false,error:false});
+                this.props.navigation.replace('OTP',{user_id : response.data['user_id'], email : response.data['email']})
+              }else{
+            
+                this.setState({isLoading:false,error:true})
+                
+              } 
+            }).catch((err)=>{
+              console.warn(err.response);
+              this.setState({isLoading:false})
+            });
+        }else{
+          alert('No internet connection');
+        }
+      });
+     
   }
 
   render() {
@@ -27,12 +75,10 @@ export default class LoginScreen extends Component {
         <LinearGradient colors={['#80ed99', '#80ed99', '#80ed99']} style={styles.top_gradient} start={{x: 0.0, y: 0.25}} end={{x: 0.5, y: 1.0}}>     
             <Animatable.View style={styles.title_container} animation="fadeInDownBig">
                 <Text style={styles.title} numberOfLines={2}> Welcome to </Text>
-                <Text style={styles.title} numberOfLines={2}> Intervention Management Platform</Text>
-
-           
+                <Text style={styles.title} numberOfLines={2}> Intervention Management Platform</Text>           
             </Animatable.View>              
        
-
+        {/* username textbox */}
         <Animatable.View animation="slideInLeft" >
             <Fumi
             label={'Username'}
@@ -42,7 +88,10 @@ export default class LoginScreen extends Component {
             iconSize={20}
             iconWidth={40}
             inputPadding={16}
-            style={[styles.username,{borderColor: this.state.focus_username_txt == true || this.state.username.length != 0  ? Colors.light_green : Colors.light}]}
+            style={[styles.username,
+                        {borderColor: this.state.focus_username_txt == true || this.state.username.length != 0  ? Colors.light_green 
+                            : 
+                                this.state.error == true ? Colors.danger : Colors.light}]}
             onFocus = {()=>this.setState({focus_username_txt:true})}
             onBlur = {()=>this.setState({focus_username_txt:false})}
             onChangeText={(value)=>this.setState({username:value})}
@@ -50,6 +99,7 @@ export default class LoginScreen extends Component {
             />
         </Animatable.View>
         
+        {/* username textbox */}
         <Animatable.View animation="slideInLeft" delay={500} >
             <Fumi
             label={'Password'}
@@ -59,7 +109,9 @@ export default class LoginScreen extends Component {
             iconSize={20}
             iconWidth={40}
             inputPadding={16}
-            style={[styles.password,{borderColor: this.state.focus_password_txt == true || this.state.password.length != 0  ? Colors.light_green : Colors.light}]}
+            style={[styles.password,{borderColor: this.state.focus_password_txt == true || this.state.password.length != 0  ? Colors.light_green 
+                        :                        
+                            this.state.error == true ? Colors.danger : Colors.light}]}
             onFocus = {()=>this.setState({focus_password_txt:true})}
             onBlur = {()=>this.setState({focus_password_txt:false})}
             onChangeText={(value)=>this.setState({password:value})}
