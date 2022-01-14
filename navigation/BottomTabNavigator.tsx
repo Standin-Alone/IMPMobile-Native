@@ -12,6 +12,7 @@ import FontAwesome  from 'react-native-vector-icons/FontAwesome';
 
 
 import HomeScreen from '../components/HomeScreen';
+import QRCodeScreen from '../components/QRCodeScreen';
 
 
 export default function BottomTabNavigator() {
@@ -76,7 +77,7 @@ export default function BottomTabNavigator() {
                   callback: () => {
                     Popup.hide()
                     AsyncStorage.clear();
-                    navigation.replace('Authentication');
+                    navigation.replace('AuthenticationScreen');
                     
                   },
                   okButtonStyle:styles.confirmButton,
@@ -98,6 +99,50 @@ export default function BottomTabNavigator() {
     })}  
      name="Home" component={HomeScreen}/>
 
+
+
+    
+  <Tabs.Screen  options={({navigation})=>({
+      tabBarIcon: ()=> <Icon name="qrcode" size={40}  color={'white'}/>,
+      headerTitle:'Scan QR Code',
+      headerTransparent:true,
+      headerTitleStyle:styles.bottomTitle,
+      headerTintColor:Colors.green,
+      headerRight: () => (            
+        <Pressable
+          onPress={  () => {                    
+                Popup.show({
+                  type: 'confirm',
+                  title: 'Warning',
+                  textBody: 'Do you want to sign out?',
+                  
+                  buttonText: 'Sign Out',
+                  confirmText:'Cancel',                                 
+                  callback: () => {
+                    Popup.hide()
+                    AsyncStorage.clear();
+                    navigation.replace('Authentication');
+                    
+                  },
+                  okButtonStyle:styles.confirmButton,
+                  okButtonTextStyle: styles.confirmButtonText
+                
+                })
+          }}
+          style={({ pressed }) => ({
+            opacity: pressed ? 0.5 : 1,
+          })}>
+          <FontAwesome
+            name="sign-out"
+            size={25}
+            color={Colors.green}
+            style={{ marginRight: 15 }}
+          />
+        </Pressable>
+      )
+    })}  
+    
+     name="qrcode" component={QRCodeScreen} />
 
 
       

@@ -13,6 +13,7 @@ import * as Yup from 'yup';
 import { Formik } from 'formik';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Popup } from 'react-native-popup-confirm-toast';
 export default class OTPScreen extends Component {
   constructor(props) {
     super(props);
@@ -57,13 +58,14 @@ export default class OTPScreen extends Component {
         if(response.isConnected){
           axios.post(ipConfig.ipAddress+'/validate-otp',data).then( async (response)=>{
             console.warn(response);
-            this.setState({error:true})
+            this.setState({error:false})
             if (response.data == true) {      
               AsyncStorage.setItem("user_id", this.state.params.user_id.toLocaleString());
               AsyncStorage.setItem("supplier_id", this.state.params.supplier_id.toLocaleString());
               AsyncStorage.setItem("full_name", this.state.params.full_name);
-              alert('success');
-              this.props.navigation.replace("Root");
+                 
+              this.props.navigation.replace("Root");                                            
+                       
               this.setState({isLoading:false});
             } else if(response.data == 'expired') {
               this.setState({isLoading:false,error:true,error_message:'Your otp has been expired. Please resend new OTP.'})

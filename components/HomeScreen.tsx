@@ -21,34 +21,50 @@ export default class HomeScreen extends Component {
     super(props);
     this.state = {          
         params:this.props.route.params,
+        isFocus:false,
+        full_name:''
     };
 
-
-
-
-
+  }
+  
+  async componentDidMount(){
+     
+    this.setState({full_name:await AsyncStorage.getItem('full_name')})
 
   }
 
-
   render() {
-    const navigation = this.props.navigation;
+
     return (
       <View style={styles.container}>        
         
         <Animatable.Text style={styles.greetings} animation="fadeInDownBig" >Hello John Edcel</Animatable.Text>        
-        <Animatable.Text style={styles.recent_title}> Recent Transactions</Animatable.Text>
-        <Card style={styles.card} elevation={10}>
-            <Card.Cover source={{uri:'http://cf.ltkcdn.net/socialnetworking/images/std/168796-281x281-girl-swear-icon.png'}} resizeMode='cover' style={styles.card_cover}/>
-            <Card.Content>
-                <Text> Lea Mae Cervantes</Text>    
-            </Card.Content>            
-        </Card>
+        <Animatable.Text style={styles.question} animation="fadeInDownBig" >What voucher transaction do you want to search?</Animatable.Text>        
+        <Fumi
+            label={'Search it by reference number'}
+            iconClass={FontAwesomeIcon}
+            iconName={'search'}
+            iconColor={Colors.green}
+            iconSize={20}
+            iconWidth={40}
+            inputPadding={16}
+            style={[
+              styles.search_text_input,
+              {
+                borderColor:
+                  this.state.isFocus == true
+                    ? Colors.green
+                    : '#ddd',
+              },
+            ]}
+            onBlur={() => this.setState({isFocus: false})}
+            onFocus={() => this.setState({isFocus: true})}
+            onChangeText={value => this.setState({search: value})}
+            keyboardType="email-address"
+          />
 
-        <FlatList 
 
-        />
-
+        <Animatable.Text style={styles.recent_title}><FontAwesomeIcon name="info-circle" color={Colors.blue_green} size={16}/>  Recent Transaction Today</Animatable.Text>
       </View>
     );
   }
@@ -69,7 +85,7 @@ const styles = StyleSheet.create({
     height: 100
   },
   recent_title:{
-    top:(Layout.height/100) * 10,
+    top:(Layout.height/100) * 15,
     left:10,
     fontFamily:'Gotham_bold',
     color:Colors.header_text
@@ -80,5 +96,20 @@ const styles = StyleSheet.create({
     color:Colors.blue_green,    
     left:10,
     fontSize:25,      
+  },
+  question:{
+    fontFamily:"Gotham_light",
+    fontSize:12,
+    top:(Layout.height/100) * 8,
+    left:(Layout.width / 100) * 3,
+  },
+  search_text_input:{
+    top:(Layout.height/100) * 10,
+    borderWidth:1,
+    left:(Layout.width / 100) * 3,
+    width:(Layout.width / 100) * 95,
+    borderRadius:20,
+    borderColor:'#ddd'
   }
+
 });
