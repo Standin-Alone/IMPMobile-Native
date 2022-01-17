@@ -6,6 +6,7 @@ const qr_frame = require('../assets/images/qr-frame.png');
 
 const farmer = require('../assets/images/farmer.png');
 
+
 const add_photo = require('../assets/images/add-photo.png');
 const squid_pay = require('../assets/images/squidpay.png');
 

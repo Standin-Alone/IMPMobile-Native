@@ -142,7 +142,7 @@ export default class OTPScreen extends Component {
             <Text style={styles.otp}>One Time Pin</Text>
               <Text style={styles.otp_desc}>
                 Your one time pin has been sent to your email {'\n'}
-                <Text style={[styles.otp_desc,{color:Colors.blue_green}]}> johnedcelzenarosa@gmail.com</Text>
+                <Text style={[styles.otp_desc,{color:Colors.blue_green}]}>  {this.state.params.email} </Text>
             </Text>
         </Animatable.View>              
         <Formik

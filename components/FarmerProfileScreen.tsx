@@ -61,6 +61,19 @@ export default class FarmerProfileScreen extends Component {
   handleGoBack = () => {
     this.props.navigation.goBack();
   }
+
+  handleGoToCommodity = () => { 
+    let get_program = this.state.params.data[0].shortname;   
+    console.warn(get_program);
+    if(get_program == 'FS'){      
+      this.props.navigation.navigate('FuelScreen',this.state.params);    
+    }else if(get_program == 'RRP2' ){
+      // navigation.navigate('FertilizerScreen',params);    
+    }
+    
+  }
+
+
   render() {
  
     return (
@@ -113,6 +126,7 @@ export default class FarmerProfileScreen extends Component {
             activeOpacity={100}
             isLoading={this.state.isLoading}
             disabledStyle={{opacity: 1}}
+            onPress ={this.handleGoToCommodity}
             >
             Go to Commodities
           </Button>

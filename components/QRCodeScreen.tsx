@@ -22,7 +22,7 @@ export default class QRCodeScreen extends Component{
             scanned:false,
             isLoading:false,
             hasPermission:false,
-            isBarcodeRead: true
+            isBarcodeRead: true,            
         }              
        
     }
@@ -33,6 +33,8 @@ export default class QRCodeScreen extends Component{
       const get_user_id = await AsyncStorage.getItem("user_id");
       const get_supplier_id = await AsyncStorage.getItem("supplier_id");
       const get_full_name = await AsyncStorage.getItem("full_name");
+      
+      
       let form = { reference_num: scanResult.data,supplier_id:get_supplier_id };
       
 
@@ -75,7 +77,9 @@ export default class QRCodeScreen extends Component{
                           history:response.data["history"],
                           supplier_id:get_supplier_id,
                           full_name:get_full_name,
-                          user_id:get_user_id});
+                          user_id:get_user_id,                          
+                        
+                        });
                                                 
                       },              
                     })
