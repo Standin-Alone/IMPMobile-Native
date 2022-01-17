@@ -14,11 +14,8 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Card } from 'react-native-paper';
-import LinearGradient from 'react-native-linear-gradient';
-
 import Button from 'apsl-react-native-button';
-import Moment from 'react-moment';
-import NumberFormat from 'react-number-format';
+import {  Popup} from 'react-native-popup-confirm-toast';
 
 export default class FuelScreen extends Component {
   constructor(props) {
@@ -41,16 +38,26 @@ export default class FuelScreen extends Component {
     this.setState({data:this.state.params.program_items});
 
 
-    console.warn(this.state.params)
-    
-  
-
 
   }
-  
+
+  // commodity that has been added  to the cart
+  myCart  = (data)=>{
+
+    this.setState(prevState => ({
+      cart: [...prevState.cart, data.cart],
+    }));
+    
+    
+  }
+
+
 
   gotoSelectedCommodityScreen = (item) =>{
-    this.props.navigation.push('SelectedCommodityScreen',{item:item})
+    this.props.navigation.push('SelectedCommodityScreen',{
+      item:item,
+      my_cart : this.myCart.bind(this)    
+    })
 
   }
 
@@ -90,12 +97,45 @@ export default class FuelScreen extends Component {
     </Card>
   );
 
-  
 
+  returnCart = () =>{
+
+  }
+
+ handleViewCart = () => {
+  if(this.state.cart.length !=0){
+        
+    this.props.navigation.navigate("ViewCartScreen", {
+        cart: this.state.cart,
+        available_balance: this.state.params.data[0].Available_Balance,
+        voucher_info:this.state.params.data,
+        supplier_id: this.state.params.supplier_id,
+        full_name: this.state.params.full_name,
+        user_id: this.state.params.user_id,
+        return_cart : this.returnCart.bind(this)
+    });
+    
+  }else{
+    Popup.show({
+      type: 'warning',              
+      title: 'Warning!',
+      textBody: "You don't have commodities in your cart.",                
+      buttonText:'Ok',
+      okButtonStyle:styles.confirmButton,
+      okButtonTextStyle: styles.confirmButtonText,
+      callback: () => {    
+        
+        Popup.hide()                                    
+      },              
+    })
+  }
+
+
+ }
 
  
   render() {
- 
+    let sum = 0.00;
     return (
       <View  style={styles.container}>        
       
@@ -117,19 +157,26 @@ export default class FuelScreen extends Component {
       {/*  Go to Summary Screen */}
       <View style={{flex: 1}}>
         <View style={{position: 'absolute', left: 0, right: 0, bottom: 0}}>
-          <Button
+
+
+          
+        <Button
             textStyle={styles.next_txt}
             style={styles.next_btn}
-            activityIndicatorColor={Colors.light}
-            activeOpacity={100}            
-            disabledStyle={{opacity: 1}}
-            // onPress ={this.handleGoToCommodity}
-            >
-        ● {this.state.cart.length} item ● ₱{this.state.cart.map((prev) => {
+            activityIndicatorColor={'white'}
+            isLoading={this.state.isLoading}
+            disabledStyle={{opacity: 1}} 
+            onPress = {this.handleViewCart}
+               
+          >
+            {'● '+ this.state.cart.length + ' items ● ₱' + (this.state.cart.map((prev) => {
                                                 sum += prev.total_amount;
                                                 return sum;
-                                          }) == 0 ? "0.00": sum.toFixed(2)} 
-          </Button>
+                                          }) == 0 ? "0.00": sum.toFixed(2)) }
+          </Button>  
+
+
+     
         </View>
       </View>
         
@@ -175,12 +222,13 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
   next_txt:{
-    color:Colors.light,    
-    fontFamily:'Gotham_light',
+    color:Colors.light,  
+    fontSize:15,
+    fontFamily:'Gotham_bold',
+    
   },
   
-  next_btn:{    
-    
+  next_btn:{        
     width: (Layout.width / 100) * 90,
     left: (Layout.width / 100) * 5,
     borderColor: Colors.green,
@@ -196,5 +244,14 @@ const styles = StyleSheet.create({
     backgroundColor:Colors.light_green,
     width: (Layout.width / 100) * 40,
     right:10
-  }
+  },
+  confirmButton:{
+    backgroundColor:'white',
+    color:Colors.green,
+    borderColor:Colors.green,
+    borderWidth:1
+  },
+  confirmButtonText:{  
+    color:Colors.green,    
+  },
 });

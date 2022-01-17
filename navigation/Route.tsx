@@ -10,6 +10,7 @@ import FarmerProfileScreen from '../components/FarmerProfileScreen';
 import AuthenticationScreen from '../components/AuthenticationScreen';
 import FuelScreen from '../components/transactions/FuelScreen';
 import SelectedCommodityScreen from '../components/transactions/SelectedCommodityScreen';
+import ViewCartScreen from '../components/transactions/ViewCartScreen';
 
 const Stack  = createStackNavigator();
 
@@ -23,6 +24,7 @@ function MyStack(){
                 <Stack.Screen component={FarmerProfileScreen} name='FarmerProfileScreen' options={{headerShown:false,headerTransparent:true}}/>
                 <Stack.Screen component={SelectedCommodityScreen} name='SelectedCommodityScreen' options={{headerTitle:'Commodity',headerTransparent:true}}/>
                 <Stack.Screen component={FuelScreen} name='FuelScreen' options={{headerTransparent:true,headerTitle:"Commodities",headerTitleStyle:{fontFamily:'Gotham_bold'}}} />
+                <Stack.Screen component={ViewCartScreen} name='ViewCartScreen' options={{headerTransparent:true,headerTitle:"My Cart",headerTitleStyle:{fontFamily:'Gotham_bold'}}} />
                 <Stack.Screen component={BottomTabNavigator} name='Root' options={{headerShown:false,headerTransparent:true}}/>
             </Stack.Navigator>
         </Root>
